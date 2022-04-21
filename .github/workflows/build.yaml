@@ -23,5 +23,10 @@ jobs:
     steps:
       - name: checkout source
         uses: actions/checkout@v2
+      - name: install buildx for multiarch build
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          version: latest
       - name: build image
-        run: DOCKER_BUILDKIT=1 docker build -t ghcr.io/$(echo $GITHUB_REPOSITORY | sed 's/docker-//g') .
+        run: docker buildx build -t ghcr.io/$(echo $GITHUB_REPOSITORY | sed 's/docker-//g') --platform linux/amd64,linux/arm64 .
